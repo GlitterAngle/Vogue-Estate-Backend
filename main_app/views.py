@@ -217,13 +217,14 @@ class VerifyUserView(APIView):
   # include the registration, login, and verification views below
 # User Registration
 class CreateAgentView(generics.CreateAPIView):
-  queryset = User.objects.all()
-  serializer_class = UserSerializer
+  queryset = Agent.objects.all()
+  serializer_class = AgentSerializer
 
   def create(self, request, *args, **kwargs):
     response = super().create(request, *args, **kwargs)
-    user = response.data['user']
-    refresh = RefreshToken.for_user(User.objects.get(username=user['username']))
+    user_data = response.data['user']  
+    user = User.objects.get(username=user_data['username'])
+    refresh = RefreshToken.for_user(user)
     return Response({
       'refresh': str(refresh),
       'access': str(refresh.access_token),
