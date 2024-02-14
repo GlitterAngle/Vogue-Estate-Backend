@@ -166,7 +166,6 @@ class CreateClientView(generics.CreateAPIView):
       'user': response.data
     })
 
-
     
 # include the registration, login, and verification views below
 # User Registration
@@ -176,12 +175,12 @@ class CreateUserView(generics.CreateAPIView):
 
   def create(self, request, *args, **kwargs):
     response = super().create(request, *args, **kwargs)
-    user = User.objects.get(username=response.data['username'])
-    refresh = RefreshToken.for_user(user)
+    user = response.data['user']
+    refresh = RefreshToken.for_user(User.objects.get(username=user['username']))
     return Response({
       'refresh': str(refresh),
       'access': str(refresh.access_token),
-      'user': response.data
+      'user': user
     })
 
 # User Login
@@ -223,12 +222,12 @@ class CreateAgentView(generics.CreateAPIView):
 
   def create(self, request, *args, **kwargs):
     response = super().create(request, *args, **kwargs)
-    user = User.objects.get(username=response.data['username'])
-    refresh = RefreshToken.for_user(user)
+    user = response.data['user']
+    refresh = RefreshToken.for_user(User.objects.get(username=user['username']))
     return Response({
       'refresh': str(refresh),
       'access': str(refresh.access_token),
-      'user': response.data
+      'user': user
     })
 
 # User Login
